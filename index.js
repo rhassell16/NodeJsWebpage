@@ -1,31 +1,37 @@
-const path = require('path')
-const expressEdge = require('express-edge')
-const express = require('express')
+const expressEdge = require("express-edge");
+const express = require("express");
+const mongoose = require("mongoose");
+const bodyParser = require("body-parser");
+const fileUpload = require("express-fileupload");
 
-const app = new express()
+const createPostController = require("./controllers/createPost");
+const homePageController = require("./controllers/homePage");
+const storePostController = require("./controllers/storePost");
+const getPostController = require("./controllers/getPost");
+const createUserController = require("./controllers/createUser");
 
-app.use(express.static('public'))
-app.use(expressEdge)
-app.set('views', `${__dirname}/views`)
+const app = new express();
 
-app.get('/', (req, res) => {
-  res.render('index')
-})
+mongoose.connect("mongodb://localhost/node-js-blog");
 
-app.get('/about', (req, res) => {
-  res.render('about')
-})
+app.use(fileUpload());
+app.use(express.static("public"));
+app.use(expressEdge);
+app.set("views", `${__dirname}/views`);
 
-app.get('/post', (req, res) => {
-  res.sendFile(path.resolve(__dirname, 'pages/post.html'))
-})
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
-app.get('/contact', (req, res) => {
-  res.sendFile(path.resolve(__dirname, 'pages/contact.html'))
-})
+const storePost = require("./middleware/storePost");
+
+app.use("/posts/store", storePost);
+
+app.get("/", homePageController);
+app.get("/post/:id", getPostController);
+app.get("/posts/new", createPostController);
+app.post("/posts/store", storePostController);
+app.get("/auth/register", createUserController);
 
 app.listen(4000, () => {
-  console.log('App listening on port 4000')
-})
- //test
- //test branch
+  console.log("App listening on port 4000");
+});
