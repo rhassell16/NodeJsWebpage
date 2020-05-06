@@ -1,5 +1,6 @@
 const User = require('../database/models/User')
 
+// checks if user is registered
 module.exports = (req, res, next) => {
   // fetch user from database
   User.findById(req.session.userId, (error, user) => {
@@ -9,7 +10,4 @@ module.exports = (req, res, next) => {
 
     next()
   })
-  // verify user
-  // if user is valid, permit request.
-  // else redirect.
 }

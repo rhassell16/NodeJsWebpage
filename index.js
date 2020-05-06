@@ -19,7 +19,8 @@ const loginUserController = require("./controllers/loginUser");
 const logoutController = require("./controllers/logout");
 
 const app = new express();
-mongoose.connect("mongodb://localhost/node-js-blog");
+mongoose.set('useCreateIndex', true)
+mongoose.connect("mongodb://localhost/node-js-blog", { useUnifiedTopology: true, useNewUrlParser: true });
 
 app.use(connectFlash());
 
